@@ -1,5 +1,6 @@
 import servo_simulator as s
 import co2_sensor_simulator as co2
+import time
 
 
 def save_data(oxygen, angle):
@@ -7,8 +8,9 @@ def save_data(oxygen, angle):
 
 def main():
 	servo = s.Servo()
-	# servo.rotateTo(10)
+	# servo.SetAngle(10)
 	sensor = co2.Co2Sensor()
+	treshold = 400
 	# sensor.sense()
 
 
@@ -19,14 +21,15 @@ def main():
 
 	while True:
 		oxygen = sensor.sense()
-		if oxyen > treshold:
-			servo.rotateTo(30)
+		if oxygen > treshold:
+			servo.SetAngle(30)
 		else:
-			servo.rotateTo(10)
+			servo.SetAngle(10)
 
 		save_data(oxygen, servo.getRotation())
 
-		time.sleep(300000) # 5 min
+		# time.sleep(300) # 5 min
+		time.sleep(5) # 5 seconds
 
 if __name__ == '__main__':
 	main()
