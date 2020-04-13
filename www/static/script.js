@@ -1,21 +1,36 @@
+function parseDate(date) {
+  const d = new Date(date);
+  return d;
+}
+
+const TRESHOLD = 900;
+
 let margin = {top: 50, right: 50, bottom: 50, left: 50}
   , width = window.innerWidth - margin.left - margin.right // Use the window's width 
   , height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
 
-let xScale = d3.scaleLinear().range([0, width]);
+// let xScale = d3.scaleLinear().range([0, width]);
+let xScale = d3.scaleTime().range([0, width]);
 let yScale = d3.scaleLinear().range([height, 0]);
 let line = d3.line()
-    .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-    .y(function(d) { console.log(d); return yScale(d["co2"]); }) // set the y values for the line generator 
+    .x(function(d, i) { return xScale(parseDate(d["datetime"])); }) // set the x values for the line generator
+    .y(function(d) { return yScale(d["co2"]) }) // set the y values for the line generator 
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 
-var dataset;
 d3.csv('./data.csv')
   .then(function(data) {
-      dataset = data;
-      xScale.domain([0, data.length]);
+      // Set the timescale to the latest week
+      const latestDate = parseDate(data[data.length-1]["datetime"]);
+      const oneWeekAgo = parseDate(latestDate);
+      // oneWeekAgo.setDate(oneWeekAgo.getDate() - 1);
+      oneWeekAgo.setHours(oneWeekAgo.getHours() - 3);
+      xScale.domain([oneWeekAgo, latestDate]);
+
+        // Set y scale from 0 to max
       yScale.domain([0, d3.max(data, (d) => parseInt(d["co2"]))]);
-      var svg = d3.select("body").append("svg")
+
+      // Create SVG
+      const svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -34,24 +49,30 @@ d3.csv('./data.csv')
 
     // 9. Append the path, bind the data, and call the line generator 
     svg.append("path")
-        .datum(dataset) // 10. Binds data to the line 
+        .datum(data) // 10. Binds data to the line 
         .attr("class", "line") // Assign a class for styling 
         .attr("d", line); // 11. Calls the line generator 
 
     // 12. Appends a circle for each datapoint 
     svg.selectAll(".dot")
-        .data(dataset)
+        .data(data)
       .enter().append("circle") // Uses the enter().append() method
         .attr("class", "dot") // Assign a class for styling
-        .attr("cx", function(d, i) { return xScale(i) })
+        .attr("cx", function(d, i) { return xScale(parseDate(d["datetime"])); })
         .attr("cy", function(d) { return yScale(d["co2"]) })
         .attr("r", 5)
-          .on("mouseover", function(a, b, c) { 
-            console.log(a) 
-            this.attr('class', 'focus')
-        })
-          .on("mouseout", function() {  })
+        .on("mouseover", (d) => console.log(d));
+
+    // Append treshold line
+    svg.append("line")
+      .attr("x1", xScale.range()[0])
+      .attr("y1", yScale(TRESHOLD))
+      .attr("x2", xScale.range()[1])
+      .attr("y2", yScale(TRESHOLD))
+      .attr("stroke-width", 2)
+      .attr("stroke", "blue");
       })
+
   .catch(function(error){
      // handle error   
   })
