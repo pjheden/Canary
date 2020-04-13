@@ -4,17 +4,16 @@ import time
 import datetime
 import sys
 
-# 21:44 close the window
-def save_data(oxygen, angle):
-	now = datetime.datetime.now().isoformat()
-	logprint("timestamp: " + str(now))
-	f = open("data.csv","a")
-	f.write(now + "," + str(oxygen) + "," + str(angle) + "\n")
-	f.close()
-
 def logprint(printstr):
 	print(printstr)
 	sys.stdout.flush()
+
+def save_data(oxygen, angle):
+	now = datetime.datetime.now().isoformat()
+	logprint("timestamp: " + str(now))
+	f = open("./www/static/data.csv","a")
+	f.write(now + "," + str(oxygen) + "," + str(angle) + "\n")
+	f.close()
 
 def main():
 	servo = s.Servo()

@@ -19,6 +19,9 @@ class Servo(object):
 		GPIO.cleanup()
 
 	def SetAngle(self, angle):
+		print("rotating to ", angle)
+		if angle == self.angle:
+			return
 		duty = angle / 18 + 2
 		GPIO.output(self.servoPIN, True)
 		self.pwm.ChangeDutyCycle(duty)
@@ -26,7 +29,6 @@ class Servo(object):
 		GPIO.output(self.servoPIN, False)
 		self.pwm.ChangeDutyCycle(0)
 		self.angle = angle
-		print("rotated to ", angle)
 
 
 	def getRotation(self):
