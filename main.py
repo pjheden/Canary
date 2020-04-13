@@ -2,15 +2,19 @@ import servo as s
 import co2_sensor as co2
 import time
 import datetime
+import sys
 
 # 21:44 close the window
 def save_data(oxygen, angle):
 	now = datetime.datetime.now().isoformat()
-	print("timestamp", now)
+	logprint("timestamp: " + str(now))
 	f = open("data.csv","a")
 	f.write(now + "," + str(oxygen) + "," + str(angle) + "\n")
 	f.close()
 
+def logprint(printstr):
+	print(printstr)
+	sys.stdout.flush()
 
 def main():
 	servo = s.Servo()
