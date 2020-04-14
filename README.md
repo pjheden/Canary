@@ -6,7 +6,19 @@ a warning that toxic gasses are in the air.
 ## Start service that runs the program automatically
 https://www.raspberrypi.org/documentation/linux/usage/systemd.md
 
-## Systemd service logs
+## Systemd service
+### Initialize
+#### Move to right place
+sudo cp myscript.service /etc/systemd/system/myscript.service
+#### Start service
+sudo systemctl start myscript.service
+#### Autostart on boot
+sudo systemctl enable myscript.service
+#### Update script
+Upon updating the script you need to stop then start the service again
+for it to take effect.
+
+### Read logs
 journalctl -u canary.service -f
 
 ## Run the program
