@@ -30,7 +30,7 @@ def main():
 		save_data(oxygen, servo.getRotation())
 
 		# time.sleep(300) # 5 min
-		time.sleep(10) # 5 seconds
+		time.sleep(100) # 5 seconds
 
 if __name__ == '__main__':
 	main()
