@@ -1,4 +1,4 @@
-import servo as s
+import windmill as wm
 import co2_sensor as co2
 import time
 import datetime
@@ -16,18 +16,18 @@ def save_data(oxygen, angle):
 	f.close()
 
 def main():
-	servo = s.Servo()
+	windmill = wm.Windmill()
 	sensor = co2.Co2Sensor()
 	treshold = 900
 
 	while True:
 		oxygen = sensor.sense()
 		if oxygen > treshold:
-			servo.SetAngle(0)
+			windmill.pulse(10)
 		else:
-			servo.SetAngle(90)
+			pass
 
-		save_data(oxygen, servo.getRotation())
+		save_data(oxygen, -1)
 
 		# time.sleep(300) # 5 min
 		time.sleep(100) # 5 seconds
