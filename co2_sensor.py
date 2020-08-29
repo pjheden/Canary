@@ -7,10 +7,15 @@ class Co2Sensor(object):
 		super(Co2Sensor, self).__init__()
 		
 	def sense(self):
-		val = -1
+		val = {'co2': -1, 'temperature': -1}
 		try:
-			val = mh_z19.read_all()['co2']
+			val = mh_z19.read_all()
+			# check that both values we care about are there
+			print(val)
+			val['co2']
+			val['temperature']
 		except Exception as e:
 			print("Could not read sensor", e)
+			val = {'co2': -1, 'temperature': -1}
 		print("Sensor: ", val)
 		return val
